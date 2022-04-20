@@ -16,6 +16,7 @@ module.exports = function(app) {
 
     app.route('/api/solve').post((req, res) => {
         const puzzleString = req.body.puzzle;
+        if (!puzzleString) return res.json({ error: 'Required field missing' });
         const result = solver.solve(puzzleString);
         res.json({
             result: result,
