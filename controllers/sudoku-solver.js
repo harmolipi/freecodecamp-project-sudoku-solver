@@ -15,40 +15,38 @@ class SudokuSolver {
         return grid;
     }
 
-    checkRowPlacement(puzzleString, row, column, value) {
-        const rowString = puzzleString.substring(row * 9, row * 9 + 9);
-        const rowValues = rowString.split('');
-        if (rowValues.includes(value)) {
-            return false;
+    checkRowPlacement(puzzleGrid, row, value) {
+        let count = 0;
+        for (let i = 0; i < 9; i++) {
+            if (puzzleGrid[row][i] === value) {
+                count += 1;
+            }
         }
-        return true;
+        return count === 1;
     }
 
-    checkColPlacement(puzzleString, row, column, value) {
-        const colValues = puzzleString.split('').filter((_, i) => i % 9 === column);
-        if (colValues.includes(value)) {
-            return false;
+    checkColPlacement(puzzleGrid, column, value) {
+        let count = 0;
+        for (let i = 0; i < 9; i++) {
+            if (puzzleGrid[i][column] === value) {
+                count += 1;
+            }
         }
-        return true;
+        return count === 1;
     }
 
-    checkRegionPlacement(puzzleString, row, column, value) {
+    checkRegionPlacement(puzzleGrid, row, column, value) {
+        let count = 0;
         const regionRow = Math.floor(row / 3) * 3;
-        const regionCol = Math.floor(column / 3) * 3;
-        const regionValues = puzzleString.split('').filter((_, i) => {
-            const rowIndex = Math.floor(i / 9);
-            const colIndex = i % 9;
-            return (
-                rowIndex >= regionRow &&
-                rowIndex < regionRow + 3 &&
-                colIndex >= regionCol &&
-                colIndex < regionCol + 3
-            );
-        });
-        if (regionValues.includes(value)) {
-            return false;
+        const regionColumn = Math.floor(column / 3) * 3;
+        for (let i = regionRow; i < regionRow + 3; i++) {
+            for (let j = regionColumn; j < regionColumn + 3; j++) {
+                if (puzzleGrid[i][j] === value) {
+                    count += 1;
+                }
+            }
         }
-        return true;
+        return count === 1;
     }
 
     solve(puzzleString) {
@@ -85,19 +83,19 @@ class SudokuSolver {
         if (!this.validate(puzzleString)) {
             return false;
         }
-        const puzzleArray = puzzleString.split('');
-        for (let i = 0; i < puzzleArray.length; i++) {
-            const row = Math.floor(i / 9);
-            const column = i % 9;
-            const value = puzzleArray[i];
-            if (value === '.') {
-                return false;
-            }
-            if (!this.checkRowPlacement(puzzleString, row, column, value) ||
-                !this.checkColPlacement(puzzleString, row, column, value) ||
-                !this.checkRegionPlacement(puzzleString, row, column, value)
-            ) {
-                return false;
+        const puzzleGrid = this.convertStringToArrayGrid(puzzleString);
+        for (let i = 0; i < 9; i++) {
+            for (let j = 0; j < 9; j++) {
+                const value = puzzleGrid[i][j];
+                if (value === '.') {
+                    return false;
+                }
+                if (!this.checkRowPlacement(puzzleGrid, i, value) ||
+                    !this.checkColPlacement(puzzleGrid, j, value) ||
+                    !this.checkRegionPlacement(puzzleGrid, i, j, value)
+                ) {
+                    return false;
+                }
             }
         }
         return true;
