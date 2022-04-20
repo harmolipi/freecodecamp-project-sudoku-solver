@@ -7,6 +7,14 @@ class SudokuSolver {
         return true;
     }
 
+    convertStringToArrayGrid(puzzleString) {
+        const grid = [];
+        for (let i = 0; i < 9; i++) {
+            grid.push(puzzleString.substr(i * 9, 9).split(''));
+        }
+        return grid;
+    }
+
     checkRowPlacement(puzzleString, row, column, value) {
         const rowString = puzzleString.substring(row * 9, row * 9 + 9);
         const rowValues = rowString.split('');
@@ -60,10 +68,9 @@ class SudokuSolver {
                         this.checkRegionPlacement(puzzleString, row, column, j)
                     ) {
                         puzzleArray[i] = j;
-                        const newPuzzleString = puzzleArray.join('');
-                        const result = this.solve(newPuzzleString);
-                        if (result) {
-                            return result;
+                        const solution = this.solve(puzzleArray.join(''));
+                        if (solution) {
+                            return solution;
                         }
                         puzzleArray[i] = '.';
                     }
