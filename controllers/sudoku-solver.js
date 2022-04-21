@@ -160,12 +160,15 @@ class SudokuSolver {
         if (!this.validate(this.convertArrayGridToString(puzzleGrid))) {
             valid = false;
         }
-        
+
+        // Normalize square in case number already placed
+        puzzleGrid[row][column] = '.'
+
         if (!this.canPlaceInRow(puzzleGrid, row, value)) conflict.push('row');
         if (!this.canPlaceInColumn(puzzleGrid, column, value)) conflict.push('column');
         if (!this.canPlaceInRegion(puzzleGrid, row, column, value)) conflict.push('region');
         valid = conflict.length === 0;
-        
+
         if (conflict.length === 0) return {valid};
         return {valid, conflict};
     }

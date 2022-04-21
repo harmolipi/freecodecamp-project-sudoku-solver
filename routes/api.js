@@ -22,6 +22,7 @@ module.exports = function(app) {
         const puzzleGrid = solver.convertStringToArrayGrid(req.body.puzzle);
         const solution = solver.solve(puzzleGrid);
         if (!solver.checkValidCompletedPuzzle(puzzleGrid)) return res.json({error: 'Puzzle cannot be solved'});
+        
         res.json({
             solution: solver.convertArrayGridToString(solution),
         });
