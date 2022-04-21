@@ -13,7 +13,8 @@ suite('Functional Tests', () => {
                 .request(server)
                 .post('/api/solve')
                 .send({ puzzle: puzzles[0][0] });
-            
+
+            assert.equal(res.status, 200);
             assert.equal(res.body.solution, puzzles[0][1]);
         });
 
@@ -23,6 +24,7 @@ suite('Functional Tests', () => {
                 .post('/api/solve')
                 .send({});
             
+            assert.equal(res.status, 200);
             assert.equal(res.body.error, 'Required field missing');
         });
 
@@ -32,6 +34,7 @@ suite('Functional Tests', () => {
                 .post('/api/solve')
                 .send({puzzle: '###..2.84..63.12.7.2..5.....9..1....8.2.3674.3.7.2..9.47...8..1..16....926914.37.'});
             
+            assert.equal(res.status, 200);
             assert.equal(res.body.error, 'Invalid characters in puzzle');
         });
 
@@ -41,6 +44,7 @@ suite('Functional Tests', () => {
                 .post('/api/solve')
                 .send({puzzle: '123'});
             
+            assert.equal(res.status, 200);
             assert.equal(res.body.error, 'Expected puzzle to be 81 characters long');
         });
 
@@ -50,6 +54,7 @@ suite('Functional Tests', () => {
                 .post('/api/solve')
                 .send({puzzle: '115..2.84..63.12.7.2..5.....9..1....8.2.3674.3.7.2..9.47...8..1..16....926914.37.'});
             
+            assert.equal(res.status, 200);
             assert.equal(res.body.error, 'Puzzle cannot be solved');
         });
     });
@@ -65,6 +70,7 @@ suite('Functional Tests', () => {
                     value: '7',
                 });
             
+            assert.equal(res.status, 200);
             assert.isTrue(res.body.valid);
         });
 
@@ -78,6 +84,7 @@ suite('Functional Tests', () => {
                     value: '4',
                 });
             
+            assert.equal(res.status, 200);
             assert.equal(res.body.conflict.length, 1);
         });
 
@@ -91,6 +98,7 @@ suite('Functional Tests', () => {
                     value: '5',
                 });
             
+            assert.equal(res.status, 200);
             assert.equal(res.body.conflict.length, 2);
         });
 
@@ -104,6 +112,7 @@ suite('Functional Tests', () => {
                     value: '2',
                 });
             
+            assert.equal(res.status, 200);
             assert.equal(res.body.conflict.length, 3);
         });
 
@@ -115,6 +124,7 @@ suite('Functional Tests', () => {
                     puzzle: puzzles[0][0],
                 });
             
+            assert.equal(res.status, 200);
             assert.equal(res.body.error, 'Required field(s) missing');
         });
 
@@ -128,6 +138,7 @@ suite('Functional Tests', () => {
                     value: '2',
                 });
             
+            assert.equal(res.status, 200);
             assert.equal(res.body.error, 'Invalid characters in puzzle');
         });
 
@@ -141,6 +152,7 @@ suite('Functional Tests', () => {
                     value: '2',
                 });
             
+            assert.equal(res.status, 200);
             assert.equal(res.body.error, 'Expected puzzle to be 81 characters long');
         });
 
@@ -154,6 +166,7 @@ suite('Functional Tests', () => {
                     value: '2',
                 });
             
+            assert.equal(res.status, 200);
             assert.equal(res.body.error, 'Invalid coordinate');
         });
 
@@ -167,6 +180,7 @@ suite('Functional Tests', () => {
                     value: '0',
                 });
             
+            assert.equal(res.status, 200);
             assert.equal(res.body.error, 'Invalid value');
         });
     });
