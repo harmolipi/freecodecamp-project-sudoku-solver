@@ -1,19 +1,19 @@
 class SudokuSolver {
-    validate(puzzleString, coordinate='', value='') {
+    validate(puzzleString, coordinate = '', value = '') {
         const validCoordinateTest = /^[A-I][1-9]$/i;
         const validCharTest = /^[1-9.]*$/;
         const validValueTest = /^[1-9]$/;
 
         if (coordinate.length > 0 && !validCoordinateTest.test(coordinate)) {
-            return {error: 'Invalid coordinate'};
+            return { error: 'Invalid coordinate' };
         }
         if (value.length > 0 && !validValueTest.test(value)) {
-            return {error: 'Invalid value'};
+            return { error: 'Invalid value' };
         }
-        if (puzzleString.length !== 81 ) {
-            return {error: 'Expected puzzle to be 81 characters long'};
+        if (puzzleString.length !== 81) {
+            return { error: 'Expected puzzle to be 81 characters long' };
         } else if (!validCharTest.test(puzzleString)) {
-            return {error: 'Invalid characters in puzzle'};
+            return { error: 'Invalid characters in puzzle' };
         }
 
         return {};
@@ -51,9 +51,12 @@ class SudokuSolver {
             G: 6,
             H: 7,
             I: 8,
-        }
+        };
 
-        return [coordMap[coordinate[0].toUpperCase()], String(Number(coordinate[1]) - 1)]
+        return [
+            coordMap[coordinate[0].toUpperCase()],
+            String(Number(coordinate[1]) - 1),
+        ];
     }
 
     checkRowPlacement(puzzleGrid, row, value) {
@@ -122,7 +125,8 @@ class SudokuSolver {
     }
 
     safePlacement(puzzleGrid, row, column, value) {
-        return(this.canPlaceInRow(puzzleGrid, row, value) &&
+        return (
+            this.canPlaceInRow(puzzleGrid, row, value) &&
             this.canPlaceInColumn(puzzleGrid, column, value) &&
             this.canPlaceInRegion(puzzleGrid, row, column, value)
         );
@@ -172,21 +176,23 @@ class SudokuSolver {
     check(puzzleGrid, row, column, value) {
         const conflict = [];
         let valid = true;
-        
+
         if (!this.validate(this.convertArrayGridToString(puzzleGrid))) {
             valid = false;
         }
 
         // Normalize square in case number already placed
-        puzzleGrid[row][column] = '.'
+        puzzleGrid[row][column] = '.';
 
         if (!this.canPlaceInRow(puzzleGrid, row, value)) conflict.push('row');
-        if (!this.canPlaceInColumn(puzzleGrid, column, value)) conflict.push('column');
-        if (!this.canPlaceInRegion(puzzleGrid, row, column, value)) conflict.push('region');
+        if (!this.canPlaceInColumn(puzzleGrid, column, value))
+            conflict.push('column');
+        if (!this.canPlaceInRegion(puzzleGrid, row, column, value))
+            conflict.push('region');
         valid = conflict.length === 0;
 
-        if (conflict.length === 0) return {valid};
-        return {valid, conflict};
+        if (conflict.length === 0) return { valid };
+        return { valid, conflict };
     }
 
     checkValidCompletedPuzzle(puzzleGrid) {
