@@ -1,6 +1,6 @@
 class SudokuSolver {
     validate(puzzleString) {
-        const validCharTest = /^[0-9.]{81}$/;
+        const validCharTest = /^[1-9.]{81}$/;
         if (!validCharTest.test(puzzleString)) {
             return false;
         }
@@ -15,6 +15,19 @@ class SudokuSolver {
         return grid;
     }
 
+    convertArrayGridToString(puzzleGrid) {
+        if (!puzzleGrid) {
+            return false;
+        }
+        let puzzleString = '';
+        for (let i = 0; i < 9; i++) {
+            for (let j = 0; j < 9; j++) {
+                puzzleString += puzzleGrid[i][j];
+            }
+        }
+        return puzzleString;
+    }
+
     checkRowPlacement(puzzleGrid, row, value) {
         let count = 0;
         for (let i = 0; i < 9; i++) {
@@ -22,7 +35,8 @@ class SudokuSolver {
                 count += 1;
             }
         }
-        return count === 1;
+        console.log('row placement is', count >= 1);
+        return count >= 1;
     }
 
     checkColPlacement(puzzleGrid, column, value) {
@@ -32,7 +46,8 @@ class SudokuSolver {
                 count += 1;
             }
         }
-        return count === 1;
+        console.log('column placement is', count >= 1);
+        return count >= 1;
     }
 
     checkRegionPlacement(puzzleGrid, row, column, value) {
@@ -46,37 +61,55 @@ class SudokuSolver {
                 }
             }
         }
-        return count === 1;
+        console.log('region placement is', count >= 1);
+        return count >= 1;
     }
 
-    solve(puzzleString) {
-        if (!this.validate(puzzleString)) {
-            return false;
+    safePlacement(puzzleGrid, row, column, value) {
+        return (!this.checkRowPlacement(puzzleGrid, row, value) &&
+            !this.checkColPlacement(puzzleGrid, column, value) &&
+            !this.checkRegionPlacement(puzzleGrid, row, column, value)
+        );
+    }
+
+    solve(puzzleGrid, row, column) {
+        console.log('checking', row, column);
+        // Base case: at the end of the grid
+        if (row === 9 - 1 && column == 9) {
+            console.log('returning end of grid');
+            return true;
         }
-        const puzzleArray = puzzleString.split('');
-        for (let i = 0; i < puzzleArray.length; i++) {
-            const row = Math.floor(i / 9);
-            const column = i % 9;
-            const value = puzzleArray[i];
-            if (value === '.') {
-                for (let j = 1; j <= 9; j++) {
-                    if (
-                        this.checkRowPlacement(puzzleString, row, column, j) &&
-                        this.checkColPlacement(puzzleString, row, column, j) &&
-                        this.checkRegionPlacement(puzzleString, row, column, j)
-                    ) {
-                        puzzleArray[i] = j;
-                        const solution = this.solve(puzzleArray.join(''));
-                        if (solution) {
-                            return solution;
-                        }
-                        puzzleArray[i] = '.';
-                    }
+
+        // At the end of the row, go to the next row
+        if (column === 9) {
+            console.log('returning next row');
+            row++;
+            column = 0;
+        }
+
+        // If the current cell is not empty, go to the next cell
+        if (puzzleGrid[row][column] !== '.') {
+            console.log('returning next cell');
+            return this.solve(puzzleGrid, row, column + 1);
+        }
+
+        for (let num = 1; num < 10; num++) {
+            console.log('checking', num);
+            // Check if it's a valid placement
+            if (this.safePlacement(puzzleGrid, row, column, num)) {
+                // Place the number
+                puzzleGrid[row][column] = `${num}`;
+
+                // Go to the next cell
+                if (this.solve(puzzleGrid, row, column + 1)) {
+                    return puzzleGrid;
                 }
-                return false;
             }
+
+            // Remove the number if we're wrong, so we can try a different one
+            puzzleGrid[row][column] = '.';
         }
-        return puzzleArray.join('');
+        return false;
     }
 
     check(puzzleString) {
