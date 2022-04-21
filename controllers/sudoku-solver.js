@@ -28,6 +28,21 @@ class SudokuSolver {
         return puzzleString;
     }
 
+    convertCoordinateToIndices(coordinate) {
+        const coordMap = {
+            A: 0,
+            B: 1,
+            C: 2,
+            D: 3,
+            E: 4,
+            F: 5,
+            G: 6,
+            H: 7,
+            I: 8,
+        }
+        return [coordMap[coordinate[0].toUpperCase()], String(Number(coordinate[1]) - 1)]
+    }
+
     checkRowPlacement(puzzleGrid, row, value) {
         let count = 0;
         for (let i = 0; i < 9; i++) {
@@ -135,26 +150,21 @@ class SudokuSolver {
         return false;
     }
 
-    check(puzzleString) {
-        if (!this.validate(puzzleString)) {
-            return false;
+    check(puzzleGrid, row, column, value) {
+        const conflict = [];
+        let valid = true;
+        
+        if (!this.validate(this.convertArrayGridToString(puzzleGrid))) {
+            valid = false;
         }
-        const puzzleGrid = this.convertStringToArrayGrid(puzzleString);
-        for (let i = 0; i < 9; i++) {
-            for (let j = 0; j < 9; j++) {
-                const value = puzzleGrid[i][j];
-                if (value === '.') {
-                    return false;
-                }
-                if (!this.checkRowPlacement(puzzleGrid, i, value) ||
-                    !this.checkColPlacement(puzzleGrid, j, value) ||
-                    !this.checkRegionPlacement(puzzleGrid, i, j, value)
-                ) {
-                    return false;
-                }
-            }
-        }
-        return true;
+        
+        if (!this.canPlaceInRow(puzzleGrid, row, value)) conflict.push('row');
+        if (!this.canPlaceInColumn(puzzleGrid, column, value)) conflict.push('column');
+        if (!this.canPlaceInRegion(puzzleGrid, row, column, value)) conflict.push('region');
+        valid = conflict.length === 0;
+        
+        if (conflict.length === 0) return {valid};
+        return {valid, conflict};
     }
 }
 

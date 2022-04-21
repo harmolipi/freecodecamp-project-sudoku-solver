@@ -6,12 +6,13 @@ module.exports = function(app) {
     let solver = new SudokuSolver();
 
     app.route('/api/check').post((req, res) => {
-        const puzzleString = req.body.puzzle;
-        if (!puzzleString) return res.json({ error: 'Required field missing' });
-        const solution = solver.check(puzzleString);
-        return res.json({
-            solution,
-        });
+        if (!req.body.puzzle || !req.body.coordinate || !req.body.value) return res.json({ error: 'Required field(s) missing' });
+        const puzzleGrid = solver.convertStringToArrayGrid(req.body.puzzle);
+        const coordinate = solver.convertCoordinateToIndices(req.body.coordinate);
+        const value = req.body.value;
+        const solution = solver.check(puzzleGrid, coordinate[0], coordinate[1], value);
+
+        return res.json(solution);
     });
 
     app.route('/api/solve').post((req, res) => {
