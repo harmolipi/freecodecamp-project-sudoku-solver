@@ -16,16 +16,14 @@ module.exports = function(app) {
     });
 
     app.route('/api/solve').post((req, res) => {
-        const puzzleString = req.body.puzzle;
-        // if (!puzzleString) return res.json({ error: 'Required field missing' });
-        // if (!solver.validate(puzzleString))
-        //     return res.json({ error: 'Invalid puzzle' });
-        const puzzleGrid = solver.convertStringToArrayGrid(puzzleString);
-        const solution = solver.convertArrayGridToString(
-            solver.solve(puzzleGrid, 0, 0)
-        );
+        if (!req.body.puzzle) return res.json({ error: 'Required field missing' });
+        const validation = solver.validate(req.body.puzzle);
+        if (validation.error) return res.json(validation);
+        const puzzleGrid = solver.convertStringToArrayGrid(req.body.puzzle);
+        const solution = solver.solve(puzzleGrid);
+        if (!solver.checkValidCompletedPuzzle(puzzleGrid)) return res.json({error: 'Puzzle cannot be solved'});
         res.json({
-            solution,
+            solution: solver.convertArrayGridToString(solution),
         });
     });
 };

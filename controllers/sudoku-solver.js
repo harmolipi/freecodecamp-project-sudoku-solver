@@ -1,10 +1,12 @@
 class SudokuSolver {
     validate(puzzleString) {
-        const validCharTest = /^[1-9.]{81}$/;
-        if (!validCharTest.test(puzzleString)) {
-            return false;
+        const validCharTest = /^[1-9.]*$/;
+        if (puzzleString.length !== 81 ) {
+            return {error: 'Expected puzzle to be 81 characters long'}
+        } else if (!validCharTest.test(puzzleString)) {
+            return {error: 'Invalid characters in puzzle'};
         }
-        return true;
+        return {};
     }
 
     convertStringToArrayGrid(puzzleString) {
@@ -115,9 +117,10 @@ class SudokuSolver {
         );
     }
 
-    solve(puzzleGrid, row, column) {
+    solve(puzzleGrid, row = 0, column = 0) {
         // Base case: at the end of the grid
         if (row === 9 - 1 && column == 9) {
+            console.log(puzzleGrid);
             return true;
         }
 
@@ -165,6 +168,27 @@ class SudokuSolver {
         
         if (conflict.length === 0) return {valid};
         return {valid, conflict};
+    }
+
+    checkValidCompletedPuzzle(puzzleGrid) {
+        if (!this.validate(this.convertArrayGridToString(puzzleGrid))) {
+            return false;
+        }
+        for (let i = 0; i < 9; i++) {
+            for (let j = 0; j < 9; j++) {
+                const value = puzzleGrid[i][j];
+                if (value === '.') {
+                    return false;
+                }
+                if (!this.checkRowPlacement(puzzleGrid, i, value) ||
+                    !this.checkColPlacement(puzzleGrid, j, value) ||
+                    !this.checkRegionPlacement(puzzleGrid, i, j, value)
+                ) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }
 
