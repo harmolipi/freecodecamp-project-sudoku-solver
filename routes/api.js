@@ -16,8 +16,13 @@ module.exports = function(app) {
 
     app.route('/api/solve').post((req, res) => {
         const puzzleString = req.body.puzzle;
-        if (!puzzleString) return res.json({ error: 'Required field missing' });
-        const solution = solver.solve(puzzleString);
+        // if (!puzzleString) return res.json({ error: 'Required field missing' });
+        // if (!solver.validate(puzzleString))
+        //     return res.json({ error: 'Invalid puzzle' });
+        const puzzleGrid = solver.convertStringToArrayGrid(puzzleString);
+        const solution = solver.convertArrayGridToString(
+            solver.solve(puzzleGrid, 0, 0)
+        );
         res.json({
             solution,
         });
