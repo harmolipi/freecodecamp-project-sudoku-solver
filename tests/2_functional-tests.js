@@ -13,7 +13,7 @@ suite('Functional Tests', () => {
                 .request(server)
                 .post('/api/solve')
                 .send({ puzzle: puzzles[0][0] })
-                .end((err, res) => {
+                .end((_err, res) => {
                     assert.equal(res.status, 200);
                     assert.equal(res.body.solution, puzzles[0][1]);
                     done();
@@ -25,7 +25,7 @@ suite('Functional Tests', () => {
                 .request(server)
                 .post('/api/solve')
                 .send({})
-                .end((err, res) => {
+                .end((_err, res) => {
                     assert.equal(res.status, 200);
                     assert.equal(res.body.error, 'Required field missing');
                     done();
@@ -39,7 +39,7 @@ suite('Functional Tests', () => {
                 .send({
                     puzzle: '###..2.84..63.12.7.2..5.....9..1....8.2.3674.3.7.2..9.47...8..1..16....926914.37.',
                 })
-                .end((err, res) => {
+                .end((_err, res) => {
                     assert.equal(res.status, 200);
                     assert.equal(res.body.error, 'Invalid characters in puzzle');
                     done();
@@ -51,7 +51,7 @@ suite('Functional Tests', () => {
                 .request(server)
                 .post('/api/solve')
                 .send({ puzzle: '123' })
-                .end((err, res) => {
+                .end((_err, res) => {
                     assert.equal(res.status, 200);
                     assert.equal(
                         res.body.error,
@@ -68,7 +68,7 @@ suite('Functional Tests', () => {
                 .send({
                     puzzle: '115..2.84..63.12.7.2..5.....9..1....8.2.3674.3.7.2..9.47...8..1..16....926914.37.',
                 })
-                .end((err, res) => {
+                .end((_err, res) => {
                     assert.equal(res.status, 200);
                     assert.equal(res.body.error, 'Puzzle cannot be solved');
                     done();
@@ -86,7 +86,7 @@ suite('Functional Tests', () => {
                     coordinate: 'A1',
                     value: '7',
                 })
-                .end((err, res) => {
+                .end((_err, res) => {
                     assert.equal(res.status, 200);
                     assert.isTrue(res.body.valid);
                     done();
@@ -102,7 +102,7 @@ suite('Functional Tests', () => {
                     coordinate: 'A2',
                     value: '4',
                 })
-                .end((err, res) => {
+                .end((_err, res) => {
                     assert.equal(res.status, 200);
                     assert.equal(res.body.conflict.length, 1);
                     done();
@@ -118,7 +118,7 @@ suite('Functional Tests', () => {
                     coordinate: 'A2',
                     value: '5',
                 })
-                .end((err, res) => {
+                .end((_err, res) => {
                     assert.equal(res.status, 200);
                     assert.equal(res.body.conflict.length, 2);
                     done();
@@ -134,7 +134,7 @@ suite('Functional Tests', () => {
                     coordinate: 'A2',
                     value: '2',
                 })
-                .end((err, res) => {
+                .end((_err, res) => {
                     assert.equal(res.status, 200);
                     assert.equal(res.body.conflict.length, 3);
                     done();
@@ -148,7 +148,7 @@ suite('Functional Tests', () => {
                 .send({
                     puzzle: puzzles[0][0],
                 })
-                .end((err, res) => {
+                .end((_err, res) => {
                     assert.equal(res.status, 200);
                     assert.equal(res.body.error, 'Required field(s) missing');
                     done();
@@ -164,7 +164,7 @@ suite('Functional Tests', () => {
                     coordinate: 'A2',
                     value: '2',
                 })
-                .end((err, res) => {
+                .end((_err, res) => {
                     assert.equal(res.status, 200);
                     assert.equal(res.body.error, 'Invalid characters in puzzle');
                     done();
@@ -180,7 +180,7 @@ suite('Functional Tests', () => {
                     coordinate: 'A2',
                     value: '2',
                 })
-                .end((err, res) => {
+                .end((_err, res) => {
                     assert.equal(res.status, 200);
                     assert.equal(
                         res.body.error,
@@ -199,7 +199,7 @@ suite('Functional Tests', () => {
                     coordinate: 'Z2',
                     value: '2',
                 })
-                .end((err, res) => {
+                .end((_err, res) => {
                     assert.equal(res.status, 200);
                     assert.equal(res.body.error, 'Invalid coordinate');
                     done();
@@ -215,7 +215,7 @@ suite('Functional Tests', () => {
                     coordinate: 'A2',
                     value: '0',
                 })
-                .end((err, res) => {
+                .end((_err, res) => {
                     assert.equal(res.status, 200);
                     assert.equal(res.body.error, 'Invalid value');
                     done();
