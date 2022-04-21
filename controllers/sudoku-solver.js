@@ -1,8 +1,17 @@
 class SudokuSolver {
-    validate(puzzleString) {
+    validate(puzzleString, coordinate='', value='') {
+        const validCoordinateTest = /^[A-I][1-9]$/;
         const validCharTest = /^[1-9.]*$/;
+        const validValueTest = /^[1-9]$/;
+
+        if (coordinate.length > 0 && !validCoordinateTest.test(coordinate)) {
+            return {error: 'Invalid coordinate'};
+        }
+        if (value.length > 0 && !validValueTest.test(value)) {
+            return {error: 'Invalid value'};
+        }
         if (puzzleString.length !== 81 ) {
-            return {error: 'Expected puzzle to be 81 characters long'}
+            return {error: 'Expected puzzle to be 81 characters long'};
         } else if (!validCharTest.test(puzzleString)) {
             return {error: 'Invalid characters in puzzle'};
         }
@@ -42,6 +51,7 @@ class SudokuSolver {
             H: 7,
             I: 8,
         }
+
         return [coordMap[coordinate[0].toUpperCase()], String(Number(coordinate[1]) - 1)]
     }
 
