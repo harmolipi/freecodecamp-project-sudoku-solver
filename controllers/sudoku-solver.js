@@ -24,7 +24,6 @@ class SudokuSolver {
         for (let i = 0; i < 9; i++) {
             grid.push(puzzleString.substr(i * 9, 9).split(''));
         }
-        // console.log(grid);
         return grid;
     }
 
@@ -130,9 +129,14 @@ class SudokuSolver {
     }
 
     solve(puzzleGrid, row = 0, column = 0) {
+        const validation = this.validate(this.convertArrayGridToString(puzzleGrid));
+        if (validation.error) {
+            // console.log(puzzleGrid);
+            return validation;
+        }
+
         // Base case: at the end of the grid
         if (row === 9 - 1 && column == 9) {
-            console.log(puzzleGrid);
             return true;
         }
 
