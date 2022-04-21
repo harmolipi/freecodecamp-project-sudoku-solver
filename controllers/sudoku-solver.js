@@ -1,6 +1,6 @@
 class SudokuSolver {
     validate(puzzleString, coordinate='', value='') {
-        const validCoordinateTest = /^[A-I][1-9]$/;
+        const validCoordinateTest = /^[A-I][1-9]$/i;
         const validCharTest = /^[1-9.]*$/;
         const validValueTest = /^[1-9]$/;
 
@@ -15,6 +15,7 @@ class SudokuSolver {
         } else if (!validCharTest.test(puzzleString)) {
             return {error: 'Invalid characters in puzzle'};
         }
+
         return {};
     }
 
@@ -23,6 +24,7 @@ class SudokuSolver {
         for (let i = 0; i < 9; i++) {
             grid.push(puzzleString.substr(i * 9, 9).split(''));
         }
+        // console.log(grid);
         return grid;
     }
 
