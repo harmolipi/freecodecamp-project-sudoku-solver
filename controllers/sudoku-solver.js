@@ -31,12 +31,11 @@ class SudokuSolver {
     checkRowPlacement(puzzleGrid, row, value) {
         let count = 0;
         for (let i = 0; i < 9; i++) {
-            if (puzzleGrid[row][i] === value) {
+            if (puzzleGrid[row][i] === String(value)) {
                 count += 1;
             }
         }
-        console.log('row placement is', count >= 1);
-        return count >= 1;
+        return count === 1;
     }
 
     checkColPlacement(puzzleGrid, column, value) {
@@ -46,8 +45,7 @@ class SudokuSolver {
                 count += 1;
             }
         }
-        console.log('column placement is', count >= 1);
-        return count >= 1;
+        return count === 1;
     }
 
     checkRegionPlacement(puzzleGrid, row, column, value) {
@@ -61,44 +59,69 @@ class SudokuSolver {
                 }
             }
         }
-        console.log('region placement is', count >= 1);
-        return count >= 1;
+        return count === 1;
+    }
+
+    canPlaceInRow(puzzleGrid, row, value) {
+        for (let i = 0; i < 9; i++) {
+            if (puzzleGrid[row][i] === value) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    canPlaceInColumn(puzzleGrid, column, value) {
+        for (let i = 0; i < 9; i++) {
+            if (puzzleGrid[i][column] === value) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    canPlaceInRegion(puzzleGrid, row, column, value) {
+        const regionRow = Math.floor(row / 3) * 3;
+        const regionColumn = Math.floor(column / 3) * 3;
+        for (let i = regionRow; i < regionRow + 3; i++) {
+            for (let j = regionColumn; j < regionColumn + 3; j++) {
+                if (puzzleGrid[i][j] === value) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     safePlacement(puzzleGrid, row, column, value) {
-        return (!this.checkRowPlacement(puzzleGrid, row, value) &&
-            !this.checkColPlacement(puzzleGrid, column, value) &&
-            !this.checkRegionPlacement(puzzleGrid, row, column, value)
+        return(this.canPlaceInRow(puzzleGrid, row, value) &&
+            this.canPlaceInColumn(puzzleGrid, column, value) &&
+            this.canPlaceInRegion(puzzleGrid, row, column, value)
         );
     }
 
     solve(puzzleGrid, row, column) {
-        console.log('checking', row, column);
         // Base case: at the end of the grid
         if (row === 9 - 1 && column == 9) {
-            console.log('returning end of grid');
             return true;
         }
 
         // At the end of the row, go to the next row
         if (column === 9) {
-            console.log('returning next row');
             row++;
             column = 0;
         }
 
         // If the current cell is not empty, go to the next cell
         if (puzzleGrid[row][column] !== '.') {
-            console.log('returning next cell');
             return this.solve(puzzleGrid, row, column + 1);
         }
 
         for (let num = 1; num < 10; num++) {
-            console.log('checking', num);
             // Check if it's a valid placement
-            if (this.safePlacement(puzzleGrid, row, column, num)) {
+            if (this.safePlacement(puzzleGrid, row, column, String(num))) {
                 // Place the number
-                puzzleGrid[row][column] = `${num}`;
+                puzzleGrid[row][column] = String(num);
 
                 // Go to the next cell
                 if (this.solve(puzzleGrid, row, column + 1)) {
